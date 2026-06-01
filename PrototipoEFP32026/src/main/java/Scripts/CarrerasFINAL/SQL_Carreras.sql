@@ -11,3 +11,6 @@ CREATE TABLE IF NOT EXISTS `carreras` (
   `estatus_carrera` varchar(1) NOT NULL,
   PRIMARY KEY (`codigo_carrera`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Insert de la aplicacion*/
+INSERT INTO aplicaciones (Aplcodigo, Aplnombre, Aplestado) VALUES (9, 'Mantenimiento Carrera', '1')

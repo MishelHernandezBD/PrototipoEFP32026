@@ -1,20 +1,78 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+//Britany Mishel Hernandez Davila 9959-24-4178
 package Vista.Carreras;
+
+import Controlador.Carreras.clsCarreras;
+import Modelo.Carreras.CarrerasDAO;
+import java.io.File;
+import java.sql.Connection;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
  * @author Mishel
  */
 public class MdiCarreras extends javax.swing.JInternalFrame {
-
-    /**
-     * Creates new form MdiCarreras
-     */
+    //---Constantes registro en bitacora---
+    int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a llamar del clsUsuarioConectado
+    private static final int Aplcodigo = 9; //Codigo de aplicacion dado en clase para bitacora
+    
     public MdiCarreras() {
         initComponents();
+    }
+    
+        private void llenartablaConClik(java.awt.event.MouseEvent evt){
+        // Carga los datos de la tabla en las casillas con un click
+        int fila = tblcarreras.getSelectedRow();
+
+        txtcodigo.setText(tblcarreras.getValueAt(fila, 0).toString());
+        txtnombre.setText(tblcarreras.getValueAt(fila, 0).toString());
+        txtfacultad.setText(tblcarreras.getValueAt(fila, 1).toString());
+        txtestado.setText(tblcarreras.getValueAt(fila, 3).toString());
+
+        // Cargar la fecha en el JDateChooser para que no se quede vacío
+        try {
+            String fechaTabla = tblcarreras.getValueAt(fila, 2).toString();
+        } catch (Exception e) {
+            
+        }
+    }
+    public void limpiarTextos(){ 
+        txtcodigo.setText("");
+        txtnombre.setText("");
+        txtfacultad.setText("");
+        txtestado.setText("");
+    }
+    
+        public void llenadoDeTablas(){
+        CarrerasDAO dao = new CarrerasDAO();
+        List<clsCarreras> lista = dao.select();
+        
+        llenadoDeTablas(lista);    
+    }
+    
+        public void llenadoDeTablas(List<clsCarreras> lista){
+        DefaultTableModel modelo = (DefaultTableModel) tblcarreras.getModel();
+        modelo.setRowCount(0);
+
+        Object[] fila = new Object[4];
+
+        for (int i = 0; i < lista.size(); i++) {
+            fila[0] = lista.get(i).getCodigoCarrera();
+            fila[1] = lista.get(i).getNombreCarrera();
+            fila[2] = lista.get(i).getCodigoFacultad();
+            fila[3] = lista.get(i).getEstatusCarrera();
+            
+            modelo.addRow(fila);
+        }
     }
 
     /**
@@ -26,21 +84,309 @@ public class MdiCarreras extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblcarreras = new javax.swing.JTable();
+        txtnombre = new javax.swing.JTextField();
+        label5 = new javax.swing.JLabel();
+        lb = new javax.swing.JLabel();
+        btnEliminar = new javax.swing.JButton();
+        btnRegistrar = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
+        label1 = new javax.swing.JLabel();
+        btnModificar = new javax.swing.JButton();
+        label3 = new javax.swing.JLabel();
+        txtbuscado = new javax.swing.JTextField();
+        txtcodigo = new javax.swing.JTextField();
+        btnLimpiar = new javax.swing.JButton();
+        label6 = new javax.swing.JLabel();
+        txtfacultad = new javax.swing.JTextField();
+        txtestado = new javax.swing.JTextField();
+        label7 = new javax.swing.JLabel();
+        btnReportes = new javax.swing.JButton();
+        btnAyudas = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        tblcarreras.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        tblcarreras.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "cod_carrera", "Nom_Carrera", "cod_Facultad", "estat_Carrera"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tblcarreras);
+
+        txtnombre.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtnombre.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
+
+        label5.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        label5.setText("Nombre Carrera");
+
+        lb.setForeground(new java.awt.Color(204, 204, 204));
+        lb.setText(".");
+
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
+        btnRegistrar.setText("Registrar");
+        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistrarActionPerformed(evt);
+            }
+        });
+
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+
+        label1.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        label1.setText("Carreras");
+
+        btnModificar.setText("Modificar");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarActionPerformed(evt);
+            }
+        });
+
+        label3.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        label3.setText("Codigo Carrera:");
+
+        txtcodigo.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtcodigo.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
+
+        btnLimpiar.setText("Limpiar");
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarActionPerformed(evt);
+            }
+        });
+
+        label6.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        label6.setText("Codigo Facultad:");
+
+        txtfacultad.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtfacultad.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
+
+        txtestado.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtestado.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
+
+        label7.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        label7.setText("Estado Carrera:");
+
+        btnReportes.setFont(new java.awt.Font("Segoe UI Semibold", 0, 14)); // NOI18N
+        btnReportes.setText("Reportes");
+        btnReportes.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnReportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReportesActionPerformed(evt);
+            }
+        });
+
+        btnAyudas.setFont(new java.awt.Font("Segoe UI Semibold", 0, 14)); // NOI18N
+        btnAyudas.setText("Ayuda");
+        btnAyudas.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnAyudas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAyudasActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(label3)
+                                    .addComponent(label5)
+                                    .addComponent(label6)
+                                    .addComponent(label7))
+                                .addGap(23, 23, 23)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtfacultad, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                                    .addComponent(txtcodigo)
+                                    .addComponent(txtnombre)
+                                    .addComponent(txtestado))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(label1)
+                                .addGap(126, 126, 126)))
+                        .addComponent(lb, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtbuscado, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 23, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnAyudas, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnReportes)
+                            .addComponent(btnAyudas))
+                        .addContainerGap(12, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(45, 45, 45)
+                                .addComponent(label3)
+                                .addGap(19, 19, 19)
+                                .addComponent(label5)
+                                .addGap(19, 19, 19))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(lb)
+                                    .addComponent(label1))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtnombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label6)
+                            .addComponent(txtfacultad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(label7)
+                            .addComponent(txtestado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnRegistrar)
+                            .addComponent(btnEliminar)
+                            .addComponent(btnModificar))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtbuscado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnBuscar)
+                            .addComponent(btnLimpiar))
+                        .addGap(60, 60, 60))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+        CarrerasDAO carreraDAO = new CarrerasDAO();
+        clsCarreras carreraAEliminar = new clsCarreras();
+        carreraAEliminar.setCodigoCarrera((txtbuscado.getText()));
+        carreraDAO.delete(carreraAEliminar);
+        llenadoDeTablas();
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
+       CarrerasDAO carreraDAO = new CarrerasDAO();;
+        clsCarreras insertar = new clsCarreras();
+        insertar.setNombreCarrera(txtnombre.getText());
+        insertar.setCodigoFacultad(txtfacultad.getText());
+        insertar.setEstatusCarrera(txtestado.getText());
+        carreraDAO.insert(insertar);
+        llenadoDeTablas();
+    }//GEN-LAST:event_btnRegistrarActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        // TODO add your handling code here:
+       
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        //        // TODO add your handling code here:
+        CarrerasDAO carreraDAO = new CarrerasDAO();
+        clsCarreras carreraActualizar = new clsCarreras();
+        carreraActualizar.setNombreCarrera(txtnombre.getText());
+        carreraActualizar.setCodigoFacultad(txtfacultad.getText());
+        carreraActualizar.setEstatusCarrera(txtestado.getText());
+        carreraDAO.update(carreraActualizar);
+        llenadoDeTablas();
+    }//GEN-LAST:event_btnModificarActionPerformed
+
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        limpiarTextos();
+    }//GEN-LAST:event_btnLimpiarActionPerformed
+
+    private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
+        Map p = new HashMap();
+        JasperReport report;
+        JasperPrint print;
+
+        try{
+            Connection connectio = Modelo.Conexion.getConnection();
+            report = JasperCompileManager.compileReport(new File("").getAbsolutePath()
+                +"/src/main/java/Reportes/Carreras/ReporteCarrera.jrxml");
+            print = JasperFillManager.fillReport(report, p, connectio);
+
+            JasperViewer view = new JasperViewer(print, false);
+
+            view.setTitle("ReporteCarrera");
+            view.setVisible(true);
+        } catch (Exception e){}
+    }//GEN-LAST:event_btnReportesActionPerformed
+
+    private void btnAyudasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAyudasActionPerformed
+        // TODO add your handling code here:
+        try {
+            if ((new File("src\\main\\java\\\\Ayudas\\Carreras\\manualAyudas.chm")).exists()) {
+                Process p = Runtime
+                .getRuntime()
+                .exec("rundll32 url.dll,FileProtocolHandler src\\main\\java\\Ayudas\\Carreras\\manualAyudas.chm");
+                p.waitFor();
+            } else {
+                System.out.println("La ayuda no Fue encontrada");
+            }
+            System.out.println("Correcto");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_btnAyudasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -78,5 +424,25 @@ public class MdiCarreras extends javax.swing.JInternalFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAyudas;
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnLimpiar;
+    private javax.swing.JButton btnModificar;
+    private javax.swing.JButton btnRegistrar;
+    private javax.swing.JButton btnReportes;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel label1;
+    private javax.swing.JLabel label3;
+    private javax.swing.JLabel label5;
+    private javax.swing.JLabel label6;
+    private javax.swing.JLabel label7;
+    private javax.swing.JLabel lb;
+    private javax.swing.JTable tblcarreras;
+    private javax.swing.JTextField txtbuscado;
+    private javax.swing.JTextField txtcodigo;
+    private javax.swing.JTextField txtestado;
+    private javax.swing.JTextField txtfacultad;
+    private javax.swing.JTextField txtnombre;
     // End of variables declaration//GEN-END:variables
 }
